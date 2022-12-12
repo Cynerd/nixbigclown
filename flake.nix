@@ -20,8 +20,8 @@
         # cross-compile those packages.
         legacyPackages = import nixpkgs {
           inherit system;
-          overlays = [self.overlay];
-          crossOverlays = [self.overlay];
+          overlays = [self.overlays.default];
+          crossOverlays = [self.overlays.default];
         };
 
         formatter = nixpkgs.legacyPackages.${system}.alejandra;
