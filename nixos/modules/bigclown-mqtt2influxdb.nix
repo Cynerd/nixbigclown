@@ -230,6 +230,7 @@ in {
     in {
       description = "BigClown MQTT to InfluxDB bridge";
       wantedBy = ["multi-user.target"];
+      wants = mkIf config.services.mosquitto.enable ["mosquitto.service"];
       script = ''
         ${optionalString envConfig ''
           ${pkgs.gawk}/bin/awk '{

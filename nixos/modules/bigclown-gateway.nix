@@ -148,6 +148,7 @@ in {
     in {
       description = "BigClown Gateway";
       wantedBy = ["multi-user.target"];
+      wants = mkIf config.services.mosquitto.enable ["mosquitto.service"];
       script = ''
         ${optionalString envConfig ''
           ${pkgs.gawk}/bin/awk '{
