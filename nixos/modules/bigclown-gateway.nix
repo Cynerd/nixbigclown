@@ -143,7 +143,7 @@ in {
       envConfig = cnf.environmentFile != null;
       finalConfig =
         if envConfig
-        then "$RUNTIME_DIRECTORY/config.yaml"
+        then "$RUNTIME_DIRECTORY/bigclown-gateway.config.yaml"
         else configFile;
     in {
       description = "BigClown Gateway";

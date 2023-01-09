@@ -225,7 +225,7 @@ in {
       envConfig = cnf.environmentFile != null;
       finalConfig =
         if envConfig
-        then "$RUNTIME_DIRECTORY/config.yaml"
+        then "$RUNTIME_DIRECTORY/bigclown-mqtt2influxdb.config.yaml"
         else configFile;
     in {
       description = "BigClown MQTT to InfluxDB bridge";
