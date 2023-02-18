@@ -6,25 +6,25 @@
     flake-utils,
     nixpkgs,
   }:
-    {
-      overlays.default = final: prev: import ./pkgs {nixpkgs = prev;};
-      nixosModules = import ./nixos self;
-    }
-    // flake-utils.lib.eachDefaultSystem (
-      system: {
-        packages = flake-utils.lib.filterPackages system (flake-utils.lib.flattenTree (
-          import ./pkgs {nixpkgs = nixpkgs.legacyPackages."${system}";}
-        ));
-
-        # The legacyPackages imported as overlay allows us to use pkgsCross to
-        # cross-compile those packages.
-        legacyPackages = import nixpkgs {
-          inherit system;
-          overlays = [self.overlays.default];
-          crossOverlays = [self.overlays.default];
-        };
-
-        formatter = nixpkgs.legacyPackages.${system}.alejandra;
+    with nixpkgs.lib;
+    with flake-utils.lib;
+      {
+        overlays.default = final: prev: import ./pkgs {nixpkgs = prev;};
+        nixosModules = import ./nixos self;
       }
-    );
+      // eachDefaultSystem (
+        system: let
+          pkgs = nixpkgs.legacyPackages."${system}";
+        in {
+          packages = filterPackages system (flattenTree (
+            import ./pkgs {nixpkgs = pkgs;}
+          ));
+
+          # The legacyPackages imported as overlay allows us to use pkgsCross to
+          # cross-compile those packages.
+          legacyPackages = pkgs.extend self.overlays.default;
+
+          formatter = pkgs.alejandra;
+        }
+      );
 }
