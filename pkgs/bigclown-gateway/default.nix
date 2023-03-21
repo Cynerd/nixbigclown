@@ -32,6 +32,11 @@ buildPythonApplication rec {
     simplejson
   ];
 
+  postPatch = ''
+    sed -ri 's/@@VERSION@@/${version}/g' \
+      bcg/__init__.py setup.py
+  '';
+
   src = fetchFromGitHub {
     owner = "hardwario";
     repo = "bch-gateway";

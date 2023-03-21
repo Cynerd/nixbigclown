@@ -17,8 +17,8 @@ buildPythonApplication rec {
   pname = "bigclown-firmware-tool";
   version = "1.9.0";
   meta = with lib; {
-    homepage = "https://github.com/hardwario/bch-mqtt2influxdb";
-    description = "Flexible MQTT to InfluxDB Bridge";
+    homepage = "https://github.com/hardwario/bch-firmware-tool";
+    description = "HARDWARIO Firmware Tool";
     platforms = platforms.linux;
     license = licenses.mit;
   };
@@ -35,6 +35,11 @@ buildPythonApplication rec {
     requests
     schema
   ];
+
+  postPatch = ''
+    sed -ri 's/@@VERSION@@/${version}/g' \
+      bcf/__init__.py setup.py
+  '';
 
   doCheck = false;
   src = fetchFromGitHub {

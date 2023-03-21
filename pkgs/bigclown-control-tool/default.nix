@@ -24,6 +24,11 @@ buildPythonApplication rec {
     pyaml
   ];
 
+  postPatch = ''
+    sed -ri 's/@@VERSION@@/${version}/g' \
+      bch/cli.py setup.py
+  '';
+
   src = fetchFromGitHub {
     owner = "hardwario";
     repo = "bch-control-tool";
