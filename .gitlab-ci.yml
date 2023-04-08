@@ -7,9 +7,28 @@ workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
 
+variables:
+  GIT_DEPTH: 0
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_UPDATE_FLAGS: --jobs 2
+
 .nix:
+  image: nixos/nix
   tags:
-    - nix
+    - docker
+  cache:
+    key: "nix"
+    paths:
+      - ".nix-cache"
+  before_script:
+    - echo "experimental-features = nix-command flakes" >>/etc/nix/nix.conf
+    - echo "system-features = nixos-test benchmark big-parallel" >>/etc/nix/nix.conf
+    - echo "cores = 0" >>/etc/nix/nix.conf
+    - echo "max-jobs = 32" >>/etc/nix/nix.conf
+    - find /nix/store -maxdepth 1 ! -name \*.drv | sort >/nix/.before
+  after_script:
+    - find /nix/store -maxdepth 1 ! -name \*.drv | sort >/nix/.after
+    - comm -13 /nix/.before /nix/.after | xargs nix copy --to "file://$PWD/.nix-cache"
 
 ## Build stage #################################################################
 .build:
